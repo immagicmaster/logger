@@ -1879,8 +1879,6 @@ class MyClient(discord.Client):
                     max_size = 4 * 1024 * 1024
                     if len(stdout_bytes) > max_size:
                         stdout_bytes = stdout_bytes[:max_size]
-                        stdout_bytes += b"
--- end of file due to file size"
                     buffer = io.BytesIO(stdout_bytes)
                     buffer.seek(0)
                     await msg.reply("Infinite loop while logging.",file=discord.File(fp=buffer, filename="error_output.lua"))
