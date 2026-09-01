@@ -1,0 +1,11 @@
+discord.py
+Pillow
+aiohttp
+requests
+joblib
+certifi
+regex
+openai
+ollama
+google-genai
+gradio_client
