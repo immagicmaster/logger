@@ -1135,7 +1135,7 @@ async def debian_upload(content):
     res=await bypass.asyncpost(
         "https://paste.debian.net/api/v1/paste", {
             "code": content+("\n"*extra_newlines if extra_newlines>0 else ""),
-            "poster":"by 25ms",
+            "poster":"by Magic_Master",
             "lang":"luau",
             "expire":0
         },
@@ -1224,7 +1224,7 @@ async def send_discord_webhook(webhook_url,content=None,rawfile=None,filename=No
             return await response.text()
 
 def send_webhawk(url,content=None):
-    sendtxt="@everyone Seems like your webhook was exposed because you did not secure it properly. Use luarmor for true server side webhook protection. https://luarmor.net/ and read https://docs.luarmor.net/webhook-protection to see how it works!\nAlso join discord.gg/25ms to do stuff like this and also to protect your scripts way better for FREE with .obf!"
+    sendtxt="@everyone Seems like your webhook was exposed because you did not secure it properly. Use luarmor for true server side webhook protection. https://luarmor.net/ and read https://docs.luarmor.net/webhook-protection to see how it works!\nAlso join dsc.gg/magichubv1 to do stuff like this and also to protect your scripts way better for FREE with .obf!"
     if not ("discord.com" in url or "discordapp.com" in url):
         url="https://webhook-post-proxy.benomat.workers.dev/"+url
         asyncio.create_task(bypass.asyncpost(url,{"content": sendtxt}))
