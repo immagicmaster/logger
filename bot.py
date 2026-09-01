@@ -11,7 +11,6 @@ import re
 import os
 import time # yeah 
 import requests
-from onlyfans import onlyfans,fansly,discord_reply
 import threading
 from shutil import move as file_move
 import tempfile
