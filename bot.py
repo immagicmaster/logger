@@ -1899,8 +1899,7 @@ class MyClient(discord.Client):
                     await msg.reply(file=file)
                 elif result:
                     await msg.reply(f"Error while obfuscating")
-                    print("Obf error:
-"+result.stderr)
+                    
                 else:
                     print(result,filename)
                 return
@@ -1915,7 +1914,7 @@ class MyClient(discord.Client):
         for activity in after.activities:
             if isinstance(activity, CustomActivity):
                 after_status = activity
-        if after_status and ".gg/25ms" in after_status.name[:12]:
+        if after_status and "magichub" in after_status.name[:12]:
             for _ in range(3):
                 if not any(role.id == 1385300853526892584 for role in get_roles(after.id)):
                     guild = client.get_guild(1306714913539887237)
@@ -1934,7 +1933,7 @@ class MyClient(discord.Client):
                         if sent_conflict_msg.get(after.id):
                             return
                         dm_channel = await after.create_dm()
-                        alert_msg=f"You put .gg/25ms in your status but {is_new_account and 'your account is too new' or is_new_member and 'you joined the server too recently'}. Verify here https://discord.com/channels/1306714913539887237/1306721933076725771/1306727174744576125 and then change your status once to receive access to cmds!"
+                        alert_msg=f"You put "magichub" in your status but {is_new_account and 'your account is too new' or is_new_member and 'you joined the server too recently'}. Verify here https://discord.com/channels/1306714913539887237/1306721933076725771/1306727174744576125 and then change your status once to receive access to cmds!"
                         try:
                             await dm_channel.send(alert_msg)
                             sent_conflict_msg[after.id] = True
