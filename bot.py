@@ -1906,65 +1906,7 @@ class MyClient(discord.Client):
         else:
             return await msg.reply("Role Dumper Request")
 
-    async def on_presence_update(self,before, after):
-        global sent_conflict_msg
-        before_status = None
-        after_status = None
-
-        for activity in after.activities:
-            if isinstance(activity, CustomActivity):
-                after_status = activity
-        if after_status and "magichub" in after_status.name[:12]:
-            for _ in range(3):
-                if not any(role.id == 1385300853526892584 for role in get_roles(after.id)):
-                    guild = client.get_guild(1306714913539887237)
-                    member = guild.get_member(after.id)
-                    if not member:
-                        return
-                    
-                    # Check if account is under 1 year old or joined server less than 1 week ago
-                    now = discord.utils.utcnow()
-                    is_new_account = after.created_at > (now - timedelta(days=365))
-                    is_new_member = member and member.joined_at > (now - timedelta(days=7))
-                    has_no_verify_role = not any(role.id == 1528772521753837781 for role in get_roles(after.id))
-                    
-                    # If new account/member and no verification role, add verification role and send message
-                    if (is_new_account or is_new_member) and has_no_verify_role:
-                        if sent_conflict_msg.get(after.id):
-                            return
-                        dm_channel = await after.create_dm()
-                        alert_msg=f"You put "magichub" in your status but {is_new_account and 'your account is too new' or is_new_member and 'you joined the server too recently'}. Verify here https://discord.com/channels/1306714913539887237/1306721933076725771/1306727174744576125 and then change your status once to receive access to cmds!"
-                        try:
-                            await dm_channel.send(alert_msg)
-                            sent_conflict_msg[after.id] = True
-                        except:
-                            verify_channel = guild.get_channel(1306721933076725771)
-                            msg=await verify_channel.send(f"<@{after.id}> {alert_msg}")
-                            sent_conflict_msg[after.id] = True
-                            await asyncio.sleep(120)
-                            await msg.delete()
-                        return
-                    role=guild.get_role(1528772521753837781)
-                    try:
-                        await after.add_roles(role)
-                        break
-                    except:
-                        await asyncio.sleep(.3)
-                else:break
-        else:
-            for activity in before.activities:
-                if isinstance(activity, CustomActivity):
-                    before_status = activity
-            for _ in range(3):
-                if any(role.id == 1385300853526892584 for role in get_roles(after.id)) and (not before_status or ".gg/25ms" in before_status.name[:12]):
-                    role=client.get_guild(1306714913539887237).get_role(1528772521753837781)
-                    try:
-                        await after.remove_roles(role)
-                        break
-                    except:
-                        await asyncio.sleep(.3)
-                else:break
-
+    
 
 if __name__ == "__main__":
     client = MyClient(intents=intents)
