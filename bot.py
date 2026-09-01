@@ -1883,14 +1883,10 @@ class MyClient(discord.Client):
                     buffer.seek(0)
                     await msg.reply("Infinite loop while logging.",file=discord.File(fp=buffer, filename="error_output.lua"))
                 else:
-                    error_message=result and result.stderr.split("
-")[0].replace('[string "sandbox"]:','line ')
-                    await msg.reply(f"Error while dumping. Most likely an invalid script.
-```diff
-- {error_message  or 'dihh error'}
-```")
-                    print("Dump error:
-",(result and result.stderr or "no stderr"))
+                    
+                    await msg.reply(f"Error while dumping. Most likely an invalid script.")
+
+                    
                 return
 
             if msg.content.startswith(".ib2") or msg.content.startswith(".ibs"):
