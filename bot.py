@@ -15,8 +15,6 @@ import threading
 from shutil import move as file_move
 import tempfile
 import io
-import licensing
-from util import *
 from discord.ui import Button, View, Select
 from hashlib import sha256
 import aiohttp
