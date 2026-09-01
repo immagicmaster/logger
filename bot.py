@@ -1148,87 +1148,6 @@ uploaders={
     "pastefy":pastefy_upload,
     "debian":debian_upload,
 }
-async def upload_cmd(msg):
-    smsg=msg.content.split(" ")
-    option=len(smsg) > 1 and smsg[1] or "pastefy"
-    content=await getfile(msg)
-    if not content:return
-    url=await (uploaders.get(option) or pastefy_upload)(content)
-    if not url:
-        await msg.reply("Error while uploading")
-        return
-    await msg.reply(f"{url}\n\n`loadstring(game:HttpGet'{url}')()`")
-
-async def prom_deobf_api_cmd(msg):
-    content=await getfile(msg)
-    if not content:
-        return
-    await msg.channel.typing()
-    result=""
-    tries=0
-    while not result:
-        tries+=1
-        if tries>5:
-            return await msg.reply("Maximum retries to deobfuscate reached. Try again later.")
-        try:
-            response=await bypass.asyncpost("https://relua.lua.cz/deobfuscate",{
-                "filename":"25ms.lua",
-                "source": content,
-                "lua_version":"Lua51",
-                "pretty":True,
-            })
-        except Exception as e:
-            print("relua:",e)
-            return await msg.reply("Error while deobfuscating")
-        result=response.get("output")
-        if not result:
-            retry=response.get("retry_after")
-            if retry:
-                await asyncio.sleep(retry)
-                continue
-            else:
-                print("relua error:",response)
-                return await msg.reply("Error while deobfuscating")
-    webhooks=sexwebhooks(msg,content=result,attachfile=True)
-    await msg.reply("Successfully deobfuscated using RELUA by 1xayd1"+(webhooks and '\n'+webhooks or ''),file=string_to_discordfile(await luabeautify(content=result), "deobfuscated.lua"))
-
-async def protect_webhook_cmd(msg):
-    # return await msg.reply("Sorry brah ts is too expensive too host. Already created webhooks will keep working but i cant allow new ones.")
-    webhook_url = extract_link(msg.content)
-    if not webhook_url:
-        await msg.reply("Please provide a valid webhook URL!")
-        return
-    
-    if "/webhooks/" not in webhook_url:
-        await msg.reply("Invalid webhook URL!")
-        return
-    
-    try:
-        end = webhook_url.split("/webhooks/")[1]
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                f"https://webhook.whimper.xyz/create/{urllib.parse.quote(end)}",
-                ssl=ssl_context
-            ) as resp:
-                if resp.status != 200:
-                    await msg.reply("Failed to protect webhook!")
-                    return
-                data = await resp.json()
-        
-        hex_key = data.get("hexKey")
-        encrypted = data.get("encrypted")
-        
-        if not hex_key or not encrypted:
-            await msg.reply("Failed to protect webhook!")
-            return
-        
-        protected_code = f'''-- MAKE SURE TO OBFUSCATE THIS CODE! KEEP CODE BELOW IN THE FILE\nlocal a={{}}for b=0,255 do a[b]=string.char(b)end local function stringchar(b)local c=a[b]or string.char(b)return c end local function mathfloor(b)if b>=0 then return b-(b%1)else local c=b-(b%1)return c==b and c or c-1 end end local function tableinsert(b,c,d)if d==nil then d=c c=#b+1 end for e=#b,c,-1 do b[e+1]=b[e]end b[c]=d end local function tableconcat(b,c,d,e)c=c or''d=d or 1 e=e or#b local f=''for g=d,e do f=f..b[g]if g<e then f=f..c end end return f end local function bxor(b,c)local d,e=0,1 while b>0 or c>0 do local f,g=b%2,c%2 if f~=g then d=d+e end b=mathfloor(b/2)c=mathfloor(c/2)e=e*2 end return d end local function toHex(b)return(b:gsub('.',function(c)return string.format('%02X',string.byte(c))end))end local function xorCrypt(b,c)local d={{}}for e=1,#b do local f,g=b:byte(e),c:byte((e-1)%#c+1)tableinsert(d,stringchar(bxor(f,g)))end return tableconcat(d)end local function encrypt(b)return toHex(xorCrypt(b,\"{hex_key}\"))end\nlocal webhook=\"https://webhook.whimper.xyz/send/{encrypted}\"\n-- DONT REMOVE THE CODE UNTIL HERE\n-- you can use the webhook like this!\nrequest({{\n  Url=webhook,\n  Method=\"POST\",\n  Body=encrypt(game:GetService(\"HttpService\"):JSONEncode({{content=\"Hello world!\"}})),\n}})'''
-        
-        await msg.reply(file=string_to_discordfile(protected_code, "protected_webhook.lua"))
-    except Exception as e:
-        print(f"protect_webhook error: {e}")
-        await msg.reply("Failed to protect webhook!")
-
 command_manager.commands={
     ".lconfig":{
         "func": dumpConfig_cmd,
@@ -1361,10 +1280,6 @@ dump_user_settings=defaultdict(int)
 loaded_sets = loads(open("dump_user_settings.json").read())
 for i in loaded_sets:
     dump_user_settings[int(i)]=loaded_sets[i]
-oracle_keys = defaultdict(int)
-loaded_oracle_keys = loads(open("oracle_keys.json").read())
-for i in loaded_oracle_keys:
-    oracle_keys[int(i)]=loaded_oracle_keys[i]
 class dumpConfig(View):
     def __init__(self, user):
         super().__init__(timeout=None)
