@@ -1832,8 +1832,7 @@ class MyClient(discord.Client):
                     await msg.reply(webhooks,file=file)
                 else:
                     await msg.reply(f"Error while dumping")
-                    print("Dump error:
-"+result.stderr)
+                    
                 return
 
         # Dumper + Owner commands
